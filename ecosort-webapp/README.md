@@ -69,24 +69,26 @@ Watch the complete EcoSort system in action! The demo video shows:
 
 ### 🖼️ Screenshots Gallery
 
+> **💡 Note**: Images are displayed using GitHub's raw URLs for optimal viewing. If images don't load, you can view them directly in the [final model directory](https://github.com/sudhanshushekharr/EcoSort-AI-Powered-Waste-Classification-System/tree/main/ecosort-webapp/final%20model).
+
 #### 🏠 Main Interface
-![Main Interface](https://github.com/sudhanshushekharr/EcoSort-AI-Powered-Waste-Classification-System/blob/main/ecosort-webapp/final%20model/Screenshot%202025-07-04%20at%205.51.25%20PM.png)
+![Main Interface](https://raw.githubusercontent.com/sudhanshushekharr/EcoSort-AI-Powered-Waste-Classification-System/main/ecosort-webapp/final%20model/Screenshot%202025-07-04%20at%205.51.25%20PM.png)
 *Clean, modern web interface for waste classification*
 
 #### 📱 Mobile Responsive
-![Mobile View](https://github.com/sudhanshushekharr/EcoSort-AI-Powered-Waste-Classification-System/blob/main/ecosort-webapp/final%20model/Screenshot%202025-06-13%20at%2011.01.10%20PM.png)
+![Mobile View](https://raw.githubusercontent.com/sudhanshushekharr/EcoSort-AI-Powered-Waste-Classification-System/main/ecosort-webapp/final%20model/Screenshot%202025-06-13%20at%2011.01.10%20PM.png)
 *Fully responsive design works on all devices*
 
 #### 🤖 AI Classification
-![Classification Results](https://github.com/sudhanshushekharr/EcoSort-AI-Powered-Waste-Classification-System/blob/main/ecosort-webapp/final%20model/Screenshot%202025-07-03%20at%206.49.43%20PM.png)
+![Classification Results](https://raw.githubusercontent.com/sudhanshushekharr/EcoSort-AI-Powered-Waste-Classification-System/main/ecosort-webapp/final%20model/Screenshot%202025-07-03%20at%206.49.43%20PM.png)
 *Real-time AI classification with confidence scores*
 
 #### 🔧 Hardware Setup
-![Arduino Setup](https://github.com/sudhanshushekharr/EcoSort-AI-Powered-Waste-Classification-System/blob/main/ecosort-webapp/final%20model/IMG20250708010644.jpg)
+![Arduino Setup](https://raw.githubusercontent.com/sudhanshushekharr/EcoSort-AI-Powered-Waste-Classification-System/main/ecosort-webapp/final%20model/IMG20250708010644.jpg)
 *Complete Arduino hardware configuration*
 
 #### ⚙️ System Status
-![System Status](https://github.com/sudhanshushekharr/EcoSort-AI-Powered-Waste-Classification-System/blob/main/ecosort-webapp/final%20model/Screenshot%202025-06-13%20at%207.14.24%20PM.png)
+![System Status](https://raw.githubusercontent.com/sudhanshushekharr/EcoSort-AI-Powered-Waste-Classification-System/main/ecosort-webapp/final%20model/Screenshot%202025-06-13%20at%207.14.24%20PM.png)
 *Real-time system monitoring and status*
 
 ### 🎯 Live Demo Features
