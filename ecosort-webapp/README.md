@@ -65,28 +65,28 @@ Watch the complete EcoSort system in action! The demo video shows:
 - **Web interface** displaying results
 - **Physical sorting** with servo motors
 
-> **📁 Demo File**: `final model/Demo.mp4` (3.7MB)
+> **📁 Demo File**: `ecosort-webapp/final model/Demo.mp4` (3.7MB)
 
 ### 🖼️ Screenshots Gallery
 
 #### 🏠 Main Interface
-![Main Interface](final%20model/Screenshot%202025-07-04%20at%205.51.25%20PM.png)
+![Main Interface](ecosort-webapp/final%20model/Screenshot%202025-07-04%20at%205.51.25%20PM.png)
 *Clean, modern web interface for waste classification*
 
 #### 📱 Mobile Responsive
-![Mobile View](final%20model/Screenshot%202025-06-13%20at%2011.01.10%20PM.png)
+![Mobile View](ecosort-webapp/final%20model/Screenshot%202025-06-13%20at%2011.01.10%20PM.png)
 *Fully responsive design works on all devices*
 
 #### 🤖 AI Classification
-![Classification Results](final%20model/Screenshot%202025-07-03%20at%206.49.43%20PM.png)
+![Classification Results](ecosort-webapp/final%20model/Screenshot%202025-07-03%20at%206.49.43%20PM.png)
 *Real-time AI classification with confidence scores*
 
 #### 🔧 Hardware Setup
-![Arduino Setup](final%20model/IMG20250708010644.jpg)
+![Arduino Setup](ecosort-webapp/final%20model/IMG20250708010644.jpg)
 *Complete Arduino hardware configuration*
 
 #### ⚙️ System Status
-![System Status](final%20model/Screenshot%202025-06-13%20at%207.14.24%20PM.png)
+![System Status](ecosort-webapp/final%20model/Screenshot%202025-06-13%20at%207.14.24%20PM.png)
 *Real-time system monitoring and status*
 
 ### 🎯 Live Demo Features
@@ -510,7 +510,7 @@ Speaker - → GND
 
 ### 🖥️ Screenshots & Demo
 
-> **Demo Materials**: Check the `final model/` directory for screenshots and demo video
+> **Demo Materials**: Check the `ecosort-webapp/final model/` directory for screenshots and demo video
 
 #### 📸 Screenshots
 - **Main Interface**: Webcam capture and classification display
@@ -520,8 +520,8 @@ Speaker - → GND
 - **Arduino Setup**: Hardware configuration and wiring
 
 #### 🎥 Demo Video
-- **Full Demo**: `final model/Demo.mp4` - Complete system demonstration
-- **Hardware Setup**: `final model/IMG20250708010644.jpg` - Physical Arduino setup
+- **Full Demo**: `ecosort-webapp/final model/Demo.mp4` - Complete system demonstration
+- **Hardware Setup**: `ecosort-webapp/final model/IMG20250708010644.jpg` - Physical Arduino setup
 - **Web Interface**: Multiple screenshots showing the user interface
 
 #### 📱 Interface Screenshots
@@ -534,6 +534,8 @@ Speaker - → GND
 - **Screenshot 2025-06-13 at 7.13.12 PM.png** - Arduino communication status
 - **Screenshot 2025-06-13 at 7.12.35 PM.png** - Error handling interface
 - **Screenshot 2025-06-13 at 7.11.59 PM.png** - System status dashboard
+
+*All screenshots are located in: `ecosort-webapp/final model/`*
 
 ### 🎯 Usage
 
