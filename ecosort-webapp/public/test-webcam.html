@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webcam Test</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .video-container {
+            position: relative;
+            width: 640px;
+            height: 480px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            background-color: #000;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+        }
+        canvas {
+            display: none;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .connected {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .log {
+            width: 100%;
+            height: 200px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            font-family: monospace;
+        }
+        .captured-image {
+            max-width: 320px;
+            max-height: 240px;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Webcam Test</h1>
+        
+        <div id="status" class="status disconnected">Socket Status: Disconnected</div>
+        
+        <div class="video-container">
+            <video id="video" autoplay playsinline></video>
+        </div>
+        
+        <canvas id="canvas"></canvas>
+        
+        <div class="controls">
+            <button id="captureBtn">Capture Image</button>
+            <button id="triggerBtn">Trigger via API</button>
+            <button id="viewImageBtn">View Latest Image</button>
+        </div>
+        
+        <div id="capturedImageContainer" style="display: none;">
+            <h3>Captured Image:</h3>
+            <img id="capturedImage" class="captured-image" />
+        </div>
+        
+        <h3>Log:</h3>
+        <div id="log" class="log"></div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const captureBtn = document.getElementById('captureBtn');
+        const triggerBtn = document.getElementById('triggerBtn');
+        const viewImageBtn = document.getElementById('viewImageBtn');
+        const statusEl = document.getElementById('status');
+        const logEl = document.getElementById('log');
+        const capturedImageContainer = document.getElementById('capturedImageContainer');
+        const capturedImage = document.getElementById('capturedImage');
+        
+        // Socket.IO
+        let socket;
+        let isConnected = false;
+        let isCapturing = false;
+        
+        // Log function
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logEl.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+        
+        // Initialize webcam
+        async function initWebcam() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                log('Webcam initialized successfully');
+            } catch (err) {
+                log(`Error accessing webcam: ${err.message}`);
+            }
+        }
+        
+        // Initialize Socket.IO
+        function initSocket() {
+            socket = io();
+            
+            socket.on('connect', () => {
+                isConnected = true;
+                statusEl.className = 'status connected';
+                statusEl.textContent = 'Socket Status: Connected';
+                captureBtn.disabled = false;
+                log('Socket connected');
+            });
+            
+            socket.on('disconnect', () => {
+                isConnected = false;
+                statusEl.className = 'status disconnected';
+                statusEl.textContent = 'Socket Status: Disconnected';
+                captureBtn.disabled = true;
+                log('Socket disconnected');
+            });
+            
+            socket.on('start_capture', () => {
+                log('Received start_capture event');
+                captureAndSendImage();
+            });
+            
+            socket.on('processing_result', (data) => {
+                log(`Received processing result: ${JSON.stringify(data)}`);
+                isCapturing = false;
+                
+                // If there's an image, update the UI
+                if (data.data && data.data.image) {
+                    log(`Image saved: ${data.data.image.filename}`);
+                    capturedImage.src = `/api/latest-image?t=${new Date().getTime()}`;
+                    capturedImageContainer.style.display = 'block';
+                }
+            });
+            
+            socket.on('error', (err) => {
+                log(`Socket error: ${err.message || 'Unknown error'}`);
+                isCapturing = false;
+            });
+        }
+        
+        // Capture and send image
+        function captureAndSendImage() {
+            if (!video.srcObject || isCapturing) return;
+            
+            isCapturing = true;
+            log('Capturing image...');
+            
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Convert to base64
+            const imageData = canvas.toDataURL('image/jpeg');
+            log('Image captured, sending to server...');
+            
+            // Display the captured image
+            capturedImage.src = imageData;
+            capturedImageContainer.style.display = 'block';
+            
+            // Send to server
+            if (socket && isConnected) {
+                socket.emit('image_captured', imageData);
+                log('Image sent to server');
+            } else {
+                log('Socket not connected, cannot send image');
+                isCapturing = false;
+            }
+        }
+        
+        // Trigger capture via API
+        async function triggerCaptureViaAPI() {
+            log('Triggering capture via API...');
+            try {
+                const response = await fetch('/api/trigger-capture');
+                const data = await response.json();
+                log(`API response: ${JSON.stringify(data)}`);
+                
+                // If there's an image, update the UI
+                if (data.data && data.data.image) {
+                    log(`Image saved: ${data.data.image.filename}`);
+                    capturedImage.src = `/api/latest-image?t=${new Date().getTime()}`;
+                    capturedImageContainer.style.display = 'block';
+                }
+            } catch (err) {
+                log(`Error triggering capture via API: ${err.message}`);
+            }
+        }
+        
+        // View latest image
+        function viewLatestImage() {
+            log('Fetching latest image...');
+            capturedImage.src = `/api/latest-image?t=${new Date().getTime()}`;
+            capturedImageContainer.style.display = 'block';
+            
+            capturedImage.onload = () => {
+                log('Latest image loaded successfully');
+            };
+            
+            capturedImage.onerror = () => {
+                log('Error loading latest image. No image may be available.');
+            };
+        }
+        
+        // Event listeners
+        captureBtn.addEventListener('click', captureAndSendImage);
+        triggerBtn.addEventListener('click', triggerCaptureViaAPI);
+        viewImageBtn.addEventListener('click', viewLatestImage);
+        
+        // Initialize
+        initWebcam();
+        initSocket();
+        
+        // Disable capture button until socket is connected
+        captureBtn.disabled = true;
+    </script>
+</body>
+</html>

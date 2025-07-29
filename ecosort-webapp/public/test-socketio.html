@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Test</title>
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .status {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .connected {
+            color: green;
+        }
+        .disconnected {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Socket.IO Test Page</h1>
+    
+    <div class="card">
+        <h2>Socket.IO Connection</h2>
+        <div class="status">Status: <span id="connection-status" class="disconnected">Disconnected</span></div>
+        <button id="connect-btn">Connect to Socket.IO</button>
+        <button id="disconnect-btn" disabled>Disconnect</button>
+    </div>
+    
+    <div class="card">
+        <h2>Trigger Capture</h2>
+        <p>Test the capture functionality:</p>
+        <button id="direct-capture-btn" disabled>Trigger Direct Capture</button>
+        <button id="api-capture-btn">Trigger via API</button>
+    </div>
+    
+    <div class="card">
+        <h2>Events Log</h2>
+        <pre id="events-log">No events yet</pre>
+    </div>
+
+    <script>
+        // DOM elements
+        const connectBtn = document.getElementById('connect-btn');
+        const disconnectBtn = document.getElementById('disconnect-btn');
+        const directCaptureBtn = document.getElementById('direct-capture-btn');
+        const apiCaptureBtn = document.getElementById('api-capture-btn');
+        const connectionStatus = document.getElementById('connection-status');
+        const eventsLog = document.getElementById('events-log');
+        
+        // Socket.IO instance
+        let socket = null;
+        
+        // Log events
+        function logEvent(event) {
+            const timestamp = new Date().toISOString();
+            eventsLog.textContent = `[${timestamp}] ${event}\n${eventsLog.textContent}`;
+        }
+        
+        // Connect to Socket.IO
+        connectBtn.addEventListener('click', () => {
+            if (socket) return;
+            
+            logEvent('Connecting to Socket.IO...');
+            socket = io();
+            
+            socket.on('connect', () => {
+                logEvent(`Connected with ID: ${socket.id}`);
+                connectionStatus.textContent = 'Connected';
+                connectionStatus.className = 'connected';
+                connectBtn.disabled = true;
+                disconnectBtn.disabled = false;
+                directCaptureBtn.disabled = false;
+            });
+            
+            socket.on('disconnect', () => {
+                logEvent('Disconnected from server');
+                connectionStatus.textContent = 'Disconnected';
+                connectionStatus.className = 'disconnected';
+                connectBtn.disabled = false;
+                disconnectBtn.disabled = true;
+                directCaptureBtn.disabled = true;
+            });
+            
+            socket.on('start_capture', () => {
+                logEvent('Received start_capture event');
+            });
+            
+            socket.on('processing_result', (result) => {
+                logEvent(`Received processing result: ${JSON.stringify(result)}`);
+            });
+            
+            socket.on('error', (error) => {
+                logEvent(`Error: ${JSON.stringify(error)}`);
+            });
+        });
+        
+        // Disconnect from Socket.IO
+        disconnectBtn.addEventListener('click', () => {
+            if (!socket) return;
+            
+            socket.disconnect();
+            socket = null;
+            logEvent('Manually disconnected from server');
+        });
+        
+        // Trigger direct capture via Socket.IO
+        directCaptureBtn.addEventListener('click', () => {
+            if (!socket) return;
+            
+            logEvent('Sending capture_image event');
+            socket.emit('capture_image');
+        });
+        
+        // Trigger capture via API
+        apiCaptureBtn.addEventListener('click', async () => {
+            logEvent('Triggering capture via API...');
+            
+            try {
+                const response = await fetch('/api/trigger-capture');
+                const data = await response.json();
+                logEvent(`API response: ${JSON.stringify(data)}`);
+            } catch (error) {
+                logEvent(`API error: ${error.message}`);
+            }
+        });
+    </script>
+</body>
+</html>
